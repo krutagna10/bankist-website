@@ -662,7 +662,7 @@ h4 {
 }
 
 /* COOKIE MESSAGE */
-.cookie-message {
+.message {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -670,5 +670,6 @@ h4 {
   background-color: white;
   color: #bbb;
   font-size: 1.5rem;
+  padding: 1rem 0;
   font-weight: 400;
 }
