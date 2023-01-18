@@ -47,5 +47,24 @@ document.querySelector('.btn--close-cookie').addEventListener('click', () => {
   message.remove();
 })
 
+message.style.backgroundColor = '#37383d';
+message.style.width = '120%';
+message.style.height = Number.parseFloat(getComputedStyle(message).height) + 30 + 'px';
+
+// Smooth Animation for links
+document.querySelector('.nav__list').addEventListener('click', function (event) {
+  event.preventDefault();
+  if (event.target.classList.contains('nav__link')) {
+    const id = event.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({
+      behavior: 'smooth',
+    })
+  }
+});
+
+// Tabbed Component
+const operationTabsWrapper = document.querySelector('.operations__tab-wrapper');
+const operationTabs = document.querySelectorAll('.operations__tab');
+const operationContents = document.querySelectorAll('.operations__content');
 
 
