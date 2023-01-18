@@ -67,4 +67,21 @@ const operationTabsWrapper = document.querySelector('.operations__tab-wrapper');
 const operationTabs = document.querySelectorAll('.operations__tab');
 const operationContents = document.querySelectorAll('.operations__content');
 
+operationTabsWrapper.addEventListener('click', (event) => {
+  const clickedButton = event.target.closest('.operations__tab');
+
+  // Guard Clause
+  if (!clickedButton) {
+    return;
+  }
+
+  // Active tab
+  operationTabs.forEach(tab => tab.classList.remove('operations__tab--active'));
+  clickedButton.classList.add('operations__tab--active');
+
+  // Active content area
+  const value = clickedButton.getAttribute('data-tab');
+  operationContents.forEach(content => content.classList.remove('operations__content--active'));
+  document.querySelector(`.operations__content--${value}`).classList.add('operations__content--active');
+})
 
