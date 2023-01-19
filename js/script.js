@@ -12,6 +12,7 @@ const operationTabsWrapper = document.querySelector('.operations__tab-wrapper');
 const operationTabs = document.querySelectorAll('.operations__tab');
 const operationContents = document.querySelectorAll('.operations__content');
 const nav = document.querySelector('.nav');
+const section1 = document.querySelector('#section--1');
 
 const openModal = () => {
   modal.classList.remove('hidden');
@@ -88,7 +89,8 @@ operationTabsWrapper.addEventListener('click', (event) => {
   document.querySelector(`.operations__content--${value}`).classList.add('operations__content--active');
 });
 
-const handleHover = (event, opacity) => {
+// Menu Fade Animation
+const handleHover = function (event) {
   if (event.target.classList.contains('nav__link')) {
     const link = event.target;
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
@@ -96,18 +98,29 @@ const handleHover = (event, opacity) => {
 
     siblings.forEach((sibling) => {
       if (sibling !== link) {
-        sibling.style.opacity = opacity;
+        sibling.style.opacity = this;
       }
     });
-    logo.style.opacity = opacity;
+    logo.style.opacity = this;
   }
 }
 
-// Menu Fade Animation
-nav.addEventListener('mouseover', (event) => {
-  handleHover(event, 0.5);
-});
+// Passing 'argument' into handler
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
 
-nav.addEventListener('mouseout', (event) => {
-  handleHover(event, 1);
-})
+const initialCoordinates = section1.getBoundingClientRect();
+console.log(initialCoordinates);
+
+// Sticky Navigation
+const observerCallback = () => {
+
+};
+
+const observerOptions = {
+  root: null,
+  threshold: 0.1
+};
+
+const observer = new IntersectionObserver(observerCallback, observerOptions);
+observer.observe(section1);
