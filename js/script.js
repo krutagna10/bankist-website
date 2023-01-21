@@ -37,37 +37,6 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// Creating and inserting elements
-const message = document.createElement('div');
-message.classList.add('message');
-// message.textContent = 'We use cookies for improved functionality and analytics.';
-message.innerHTML = `
-          We use cookies for improved functionality and analytics.
-          <button class='btn btn--close-cookie'>Got it!</button>
-`;
-header.append(message);
-
-// Delete element
-document.querySelector('.btn--close-cookie').addEventListener('click', () => {
-  message.remove();
-})
-
-// Cookies message
-message.style.backgroundColor = '#37383d';
-message.style.width = '120%';
-message.style.height = Number.parseFloat(getComputedStyle(message).height) + 30 + 'px';
-
-// Smooth Animation for links
-document.querySelector('.nav__list').addEventListener('click', function (event) {
-  event.preventDefault();
-  if (event.target.classList.contains('nav__link')) {
-    const id = event.target.getAttribute('href');
-    document.querySelector(id).scrollIntoView({
-      behavior: 'smooth',
-    })
-  }
-});
-
 // Tabbed Component
 operationTabsWrapper.addEventListener('click', (event) => {
   const clickedButton = event.target.closest('.operations__tab');
@@ -109,18 +78,49 @@ const handleHover = function (event) {
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
 
-const initialCoordinates = section1.getBoundingClientRect();
-console.log(initialCoordinates);
-
 // Sticky Navigation
-const observerCallback = () => {
+const navHeight = nav.getBoundingClientRect().height;
 
+const stickyNav = (entries) => {
+  const entry = entries[0];
+
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
 };
 
-const observerOptions = {
+const navObj = {
   root: null,
-  threshold: 0.1
+  threshold: 0,
+  rootMargin: `${-Math.abs(navHeight)}px`,
 };
 
-const observer = new IntersectionObserver(observerCallback, observerOptions);
-observer.observe(section1);
+
+const headerObserver = new IntersectionObserver(stickyNav, navObj);
+headerObserver.observe(header);
+
+// Reveal Section
+const sections = document.querySelectorAll('.section');
+
+const revealSection = (entries, observer) => {
+  const entry = entries[0];
+
+  if (entry.isIntersecting) {
+    entry.target.classList.remove('section--hidden');
+    observer.unobserve(entry.target);
+  }
+};
+
+const revealObj = {
+  root: null,
+  threshold: 0.15,
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, revealObj);
+
+sections.forEach((section) => {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+})
