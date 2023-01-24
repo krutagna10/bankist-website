@@ -59,7 +59,7 @@ operationTabsWrapper.addEventListener('click', (event) => {
 });
 
 // Menu Fade Animation
-const handleHover = function (event) {
+const handleHover = function(event) {
   if (event.target.classList.contains('nav__link')) {
     const link = event.target;
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
@@ -72,7 +72,7 @@ const handleHover = function (event) {
     });
     logo.style.opacity = this;
   }
-}
+};
 
 // Passing 'argument' into handler
 nav.addEventListener('mouseover', handleHover.bind(0.5));
@@ -94,7 +94,7 @@ const stickyNav = (entries) => {
 const navObj = {
   root: null,
   threshold: 0,
-  rootMargin: `${-Math.abs(navHeight)}px`,
+  rootMargin: `${-Math.abs(navHeight)}px`
 };
 
 
@@ -115,7 +115,7 @@ const revealSection = (entries, observer) => {
 
 const revealObj = {
   root: null,
-  threshold: 0.15,
+  threshold: 0.15
 };
 
 const sectionObserver = new IntersectionObserver(revealSection, revealObj);
@@ -123,4 +123,129 @@ const sectionObserver = new IntersectionObserver(revealSection, revealObj);
 sections.forEach((section) => {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
+});
+
+// Laxy loading images
+const imageTargets = document.querySelectorAll('img[data-src]');
+const loadImg = (entries, observer) => {
+  const entry = entries[0];
+
+  if (!entry.isIntersecting) {
+    return;
+  }
+
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener('load', () => {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px'
+});
+
+imageTargets.forEach((image) => {
+  imgObserver.observe(image);
+});
+
+// Slider
+const slider = () => {
+
+  const slides = document.querySelectorAll('.slide');
+  const slider = document.querySelector('.slider');
+  const sliderBtnRight = document.querySelector('.slider__btn--right');
+  const sliderBtnLeft = document.querySelector('.slider__btn--left');
+  const dotsContainer = document.querySelector('.dots');
+
+  let currentSlide = 0;
+
+  const createDots = () => {
+    slides.forEach((_, index) => {
+      const html = `
+    <button class='dots__dot' data-slide='${index}'></button>
+    `;
+      dotsContainer.insertAdjacentHTML('beforeend', html);
+    });
+  };
+
+  const activateDot = (slide) => {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach((dot) => {
+        dot.classList.remove('dots__dot--active');
+      });
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  const goToSlide = (currentSlide) => {
+    slides.forEach((slide, index) => {
+      slide.style.transform = `translateX(${100 * (index - currentSlide)}%)`;
+    });
+  };
+
+  const nextSlide = () => {
+    if (currentSlide === 2) {
+      currentSlide = 0;
+    } else {
+      currentSlide++;
+    }
+    goToSlide(currentSlide);
+    activateDot(currentSlide);
+  };
+
+  const prevSlide = () => {
+    if (currentSlide === 0) {
+      currentSlide = 2;
+    } else {
+      currentSlide--;
+    }
+    goToSlide(currentSlide);
+    activateDot(currentSlide);
+  };
+
+  sliderBtnRight.addEventListener('click', nextSlide);
+  sliderBtnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      prevSlide();
+    }
+    if (event.key === 'ArrowRight') {
+      nextSlide();
+    }
+  });
+
+
+
+  const init = () => {
+    createDots();
+    goToSlide(0);
+    activateDot(0);
+  };
+
+  init();
+
+  dotsContainer.addEventListener('click', (event) => {
+    if (event.target.classList.contains('dots__dot')) {
+      const slide = event.target.dataset.slide;
+      goToSlide(slide);
+      currentSlide = parseInt(slide);
+      activateDot(slide);
+    }
+  });
+
+};
+slider();
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  console.log('HTML parsed and DOM Tree Built !', event);
 })
+
